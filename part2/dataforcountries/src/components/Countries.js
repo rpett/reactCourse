@@ -2,8 +2,8 @@ import React from 'react';
 
 const Countries = ({countries, setFilter}) => {
 
-    const handleFilterChange = (event) => {
-        setFilter(event.target.id)
+    const handleFilterChange = (name) => {
+        setFilter(name)
       }
 
     if(countries.length > 10) 
@@ -51,7 +51,7 @@ const Countries = ({countries, setFilter}) => {
                 <div key={country.name +' div'}>
                     <p key={country.name}>
                         {country.name}
-                        <button id={country.name} key={country.name+' show'} onClick={handleFilterChange}>show</button>
+                        <button key={country.name+' show'} onClick={() => handleFilterChange(country.name)}>show</button>
                     </p>
                     
                 </div>
