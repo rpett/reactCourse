@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -10,6 +11,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ notification, setNotification] = useState({})
 
   useEffect(() => {
     personService
@@ -31,6 +33,13 @@ const App = () => {
             setPersons(persons.concat(returnedPerson))
             setNewName('')
             setNewNumber('')
+            setNotification({
+              className: 'success',
+              message: `${returnedPerson.name} was added`
+            })
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
           }
         )
     }
@@ -45,6 +54,13 @@ const App = () => {
           .update(foundPerson.id,updatedPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== foundPerson.id ? person : returnedPerson))
+            setNotification({
+              className: 'success',
+              message: `${returnedPerson.name} was updated`
+            })
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
           })
       }
     }
@@ -66,11 +82,28 @@ const App = () => {
     if (window.confirm(`Delete ${name}?`)) { 
       personService
       .deletePerson(id)
-      .then(
-        setPersons(
-          persons.filter(person => person.id !== id)
-        )
+      .then( () => {
+          setPersons(
+            persons.filter(person => person.id !== id)
+          )
+          setNotification({
+            className: 'success',
+            message: `${name} was updated`
+          })
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+        }
       )
+      .catch((error) => {
+        setNotification({
+          className: 'error',
+          message: `Information of ${name} has already been removed from server`
+        })
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      })
     }
   }
 
@@ -90,6 +123,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <Notification notification={notification} />
         <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h3>Add a new</h3>
         <PersonForm formValues={formValues} />
