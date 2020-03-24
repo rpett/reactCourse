@@ -3,8 +3,6 @@ import Note from './components/Note'
 import Notification from './components/Notification'
 import noteService from './services/notes'
 
-
-
 const App = () => {
     const [notes, setNotes] = useState([])
     const [newNote, setNewNote] = useState('a new note...')
